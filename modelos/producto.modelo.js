@@ -116,10 +116,18 @@ Producto.modificar = function (producto, respuesta) {
                 if (error) {
                     console.log('Error modificando producto ', error);
                     respuesta(error, null);
+                    return;
                 }
-                else {
-                    respuesta(null, producto);
+                //La consulta no afectó registros
+                if (resultado.modifiedCount == 0) {
+                    //No se encontraron registros
+                    respuesta({ mensaje: "Producto no actualizado" }, null);
+                    console.log("No se actualizó el producto ", pais);
+                    return;
                 }
+
+                respuesta(null, producto);
+
             }
 
         );

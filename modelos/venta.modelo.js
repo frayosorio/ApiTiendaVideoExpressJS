@@ -38,7 +38,6 @@ Venta.obtenerValor = function (idVenta, respuesta) {
                 }
                 else {
                     if (resultado) {
-                        console.log(resultado[0]);
                         respuesta(null, resultado[0].valorTotalVenta);
                     }
                     else {
@@ -149,7 +148,6 @@ Venta.modificarValor = function (idVenta, respuesta) {
 
     this.obtenerValor(idVenta,
         function (error, resultado) {
-            console.log(resultado);
             //***** codigo MONGO para modificar el estado de la venta
             basedatos.collection('ventas')
                 .updateOne(
