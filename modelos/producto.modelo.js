@@ -79,7 +79,7 @@ Producto.agregar = function (producto, respuesta) {
             año: producto.año,
             empresa: producto.empresa,
             precio: producto.precio,
-            existencia: producto.direccion,
+            existencia: producto.existencia,
         }
             //*****
             , function (error, resultado) {
@@ -108,7 +108,7 @@ Producto.modificar = function (producto, respuesta) {
                     año: producto.año,
                     empresa: producto.empresa,
                     precio: producto.precio,
-                    existencia: producto.direccion,
+                    existencia: producto.existencia,
                 }
             }
             //*****
@@ -132,6 +132,47 @@ Producto.modificar = function (producto, respuesta) {
 
         );
 }
+
+Producto.actualizarExistencia = function (id, unidades, respuesta) {
+    const basedatos = bd.obtenerBD();
+
+    this.obtener(id,
+        function (error, resultado) {
+            if (resultado) {
+                //***** codigo MONGO para moidifcar un Documento producto
+                basedatos.collection('productos')
+                    .updateOne(
+                        { id: id },
+                        {
+                            $set: {
+                                existencia: resultado.existencia-unidades,
+                            }
+                        }
+                        //*****
+                        , function (error, resultado) {
+                            if (error) {
+                                console.log('Error actualizando existencia ', error);
+                                respuesta(error, null);
+                                return;
+                            }
+                            //La consulta no afectó registros
+                            if (resultado.modifiedCount == 0) {
+                                //No se encontraron registros
+                                respuesta({ mensaje: `Existencia no actualizada del producto ${resultado.nombre}` }, null);
+                                console.log(`Existencia no actualizada del producto ${resultado.nombre}`);
+                                return;
+                            }
+
+                            respuesta(null, `El inventario del producto ${resultado.nombre} fue actualizado`);
+
+                        }
+
+                    );
+            }
+        });
+}
+
+
 
 Producto.eliminar = function (idproducto, respuesta) {
     const basedatos = bd.obtenerBD();
